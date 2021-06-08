@@ -18,18 +18,33 @@ const EmployeeForm = ({navigation}) => {
   const [name, setName] = React.useState('');
   const [roles, setRoles] = React.useState('');
   const [lead, setLead] = React.useState('');
+  const [namearray, setNameArray] = React.useState([]);
+  const [rolearray, setRoleArray] = React.useState([]);
+  const [leadarray, setLeadArray] = React.useState([]);
+
   const setInfo = async (ename, eroles, elead) => {
+    namearray.push(ename);
+    rolearray.push(eroles);
+    leadarray.push(elead);
+    //setNameArray({...ename, namearra});
+    await AsyncStorage.setItem('Namearr', JSON.stringify(namearra));
     await AsyncStorage.setItem('Name', ename);
     await AsyncStorage.setItem('Roles', eroles);
     await AsyncStorage.setItem('Lead', elead);
   };
+
   const uploadEmployee = () => {
     console.warn('name', name);
     console.warn('roles', roles);
-
+    console.warn('lead', lead);
     setInfo(name, roles, lead);
-    navigation.navigate('employeeDetails');
+    navigation.navigate('employeeDetails', {
+      user: namearray,
+      role: rolearray,
+      lead: leadarray,
+    });
   };
+  const handleUser = () => {};
   return (
     <View>
       <TextInput
@@ -45,28 +60,40 @@ const EmployeeForm = ({navigation}) => {
           },
         ]}
       />
-      <View style={styles.pickerContainer}>
-        <View style={{flex: 20}}>
-          <Picker
-            selectedValue={roles}
-            placeholder={'Select Roles'}
-            onValueChange={service => setRoles(service)}>
-            <Picker.Item value="Employee" label="Employee" />
-            <Picker.Item value="ReactDeveloper" label="ReactDeveloper" />
-            <Picker.Item value="AndroidDeveloper" label="AndroidDeveloper" />
-          </Picker>
+      <View>
+        <Text style={styles.Label}>
+          Select Roles
+          <Text style={{color: 'red', fontSize: 16}}> *</Text>
+        </Text>
+        <View style={styles.pickerContainer}>
+          <View style={{flex: 20}}>
+            <Picker
+              selectedValue={roles}
+              placeholder={'Select Roles'}
+              onValueChange={service => setRoles(service)}>
+              <Picker.Item value="Employee" label="Employee" />
+              <Picker.Item value="ReactDeveloper" label="ReactDeveloper" />
+              <Picker.Item value="AndroidDeveloper" label="AndroidDeveloper" />
+            </Picker>
+          </View>
         </View>
       </View>
-      <View style={styles.pickerContainer}>
-        <View style={{flex: 20}}>
-          <Picker
-            selectedValue={lead}
-            placeholder={'Select Lead'}
-            onValueChange={itemLead => setLead(itemLead)}>
-            <Picker.Item value="suresh" label="suresh" />
-            <Picker.Item value="krishna" label="krishna" />
-            <Picker.Item value="kumar" label="kumar" />
-          </Picker>
+      <View>
+        <Text style={styles.Label}>
+          Select Lead
+          <Text style={{color: 'red', fontSize: 16}}> *</Text>
+        </Text>
+        <View style={styles.pickerContainer}>
+          <View style={{flex: 20}}>
+            <Picker
+              selectedValue={lead}
+              placeholder={'Select Lead'}
+              onValueChange={itemLead => setLead(itemLead)}>
+              <Picker.Item value="suresh" label="suresh" />
+              <Picker.Item value="krishna" label="krishna" />
+              <Picker.Item value="kumar" label="kumar" />
+            </Picker>
+          </View>
         </View>
       </View>
       <View>
@@ -93,6 +120,13 @@ const styles = StyleSheet.create({
     padding: 10,
     alignSelf: 'stretch',
     backgroundColor: '#FFFFFF',
+  },
+  Label: {
+    textTransform: 'uppercase',
+    paddingHorizontal: 0,
+    fontSize: 14,
+    color: '#7a8590',
+    fontWeight: 'bold',
   },
   header: {
     fontSize: 30,
